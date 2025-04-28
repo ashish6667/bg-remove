@@ -127,17 +127,16 @@ const paymentRazorpay = async (req, res) => {
     const options = {
       amount: amount * 100, // Amount in paisa
       currency: process.env.CURRENCY || "INR",
-      receipt: newTransaction._id.toString(),
-      notes: {
-        planId,
-        credits,
-        clerkId,
-      },
-    };
+      receipt: newTransaction._id
+    }
 
-    const order = await razorpayInstance.orders.create(options);
-
-    res.json({ success: true, order });
+    await razorpayInstance.orders.create(options, async (error, order) => {
+      if (error) {
+        console.log(err);
+        return res.json({ success: false, message: error })
+      } 
+        res.json({ success: true, order })
+      })
 
   } catch (error) {
     console.log(error.message);
