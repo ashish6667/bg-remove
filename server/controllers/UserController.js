@@ -26,12 +26,13 @@ const clerkWebhooks = async (req, res) => {
           firstName: data.first_name,
           lastName: data.last_name,
           photo: data.image_url,
+          creditBalance: 5, // ✅ Add default credits here
         };
         await userModel.create(userData);
         res.json({});
-
         break;
       }
+      
 
       case "user.updated": {
         const userData = {
