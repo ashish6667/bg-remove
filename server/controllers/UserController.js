@@ -1,5 +1,5 @@
-import { Webhook } from "svix";
-import userModel from "../models/userModel.js";
+import { Webhook } from "svix"
+import userModel from "../models/userModel.js"
 import transactionModel from "../models/transactionModel.js";
 import razorpay from "razorpay";
 import crypto from "crypto";
@@ -9,7 +9,7 @@ import crypto from "crypto";
 const clerkWebhooks = async (req, res) => {
   try {
     // Create a Svix instance with Clerk webhook secret.
-    const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
+    const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
 
     await whook.verify(JSON.stringify(req.body), {
       "svix-id": req.headers["svix-id"],
@@ -17,7 +17,7 @@ const clerkWebhooks = async (req, res) => {
       "svix-signature": req.headers["svix-signature"],
     });
 
-    const { data, type } = req.body;
+    const { data, type } = req.body
     switch (type) {
       case "user.created": {
         const userData = {
@@ -25,31 +25,30 @@ const clerkWebhooks = async (req, res) => {
           email: data.email_addresses[0].email_address,
           firstName: data.first_name,
           lastName: data.last_name,
-          photo: data.image_url,
-          creditBalance: 5, // ✅ Add default credits here
-        };
-        await userModel.create(userData);
-        res.json({});
+          photo: data.image_url  
+        }
+
+        await userModel.create(userData)
+        res.json({})
         break;
       }
-      
 
       case "user.updated": {
         const userData = {
           email: data.email_addresses[0].email_address,
           firstName: data.first_name,
           lastName: data.last_name,
-          photo: data.image_url,
-        };
+          photo: data.image_url  
+        }
 
-        await userModel.findOneAndUpdate({ clerkId: data.id }, userData);
-        res.json({});
-
+        await userModel.findOneAndUpdate({ clerkId: data.id }, userData)
+        res.json({})
         break;
       }
+
       case "user.deleted": {
-        await userModel.findOneAndDelete({ clerkId: data.id });
-        res.json({});
+        await userModel.findOneAndDelete({ clerkId: data.id })
+        res.json({})
         break;
       }
       default:
@@ -86,10 +85,13 @@ const paymentRazorpay = async (req, res) => {
     const planId = req.body.planId;
     const clerkId = req.clerkId; // ✅ Correctly get clerkId
 
+    // Check if the user exists
     const userData = await userModel.findOne({ clerkId });
     if (!userData) {
       return res.json({ success: false, message: "Invalid User" });
     }
+
+    console.log("User found: ", userData);  // Log user data for debugging
 
     let credits, plan, amount, date;
     switch (planId) {
@@ -147,7 +149,6 @@ const paymentRazorpay = async (req, res) => {
   }
 };
 
-// ✅ New API to verify Razorpay Payment
 const verifyPayment = async (req, res) => {
   try {
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;

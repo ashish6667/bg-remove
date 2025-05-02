@@ -10,14 +10,14 @@ const authUser = async (req, res, next) => {
     }
 
     const token_decode = jwt.decode(token);
-    console.log("Decoded Token:", token_decode);
+    console.log("Decoded Token:", token_decode);  // Log token decoding
 
     if (!token_decode || !token_decode.clerkId) {
       return res.json({ success: false, message: "Invalid token or clerkId missing." });
     }
 
     req.clerkId = token_decode.clerkId; // Attach clerkId to req
-    console.log("Clerk ID:", req.clerkId);
+    console.log("Clerk ID:", req.clerkId);  // Log clerkId
 
     next();
   } catch (error) {

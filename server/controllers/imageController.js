@@ -29,7 +29,7 @@ const removeBgImage = async (req, res) => {
       headers: {
         'x-api-key': process.env.CLIPDROP_API,
       },
-      responseType: 'arraybuffer',
+      responseType: 'arraybuffer'
     });
 
     const base64Image = Buffer.from(data, 'binary').toString('base64');
