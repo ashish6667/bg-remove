@@ -8,4 +8,4 @@ userRouter.post('/webhooks', clerkWebhooks);
 userRouter.get('/credits', authUser, userCredits);
 userRouter.post('/pay-razor',authUser,paymentRazorpay)
 userRouter.post('/verify-razor',verifyRazorpay)
-export default userRouter;
+export default userRouter
