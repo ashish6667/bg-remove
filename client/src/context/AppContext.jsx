@@ -20,17 +20,23 @@ const AppContextProvider = (props) => {
 
   const loadCreditsData = async () => {
     try {
-      const token = await getToken()
-      const { data } = await axios.get(backendUrl +'/api/user/credits', {headers: { token }})
+      const token = await getToken();
+      const { data } = await axios.get(`${backendUrl}/api/user/credits`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
       if (data.success) {
-        setCredit(data.credits)
-        console.log(data.credits)
+        setCredit(data.credits);
+        console.log(data.credits);
       }
     } catch (error) {
-      console.log(error)
-      toast.error(error.message)
+      console.log(error);
+      toast.error(error.message);
     }
-  }
+  };
+  
   const removeBg = async (image) => {
     try {
       if(!isSignedIn) {
